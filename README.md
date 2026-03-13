@@ -69,6 +69,17 @@ NUXT_PUBLIC_FIREBASE_APP_ID=
 When Firestore is configured, songs are loaded from Firestore and writes are persisted there.
 If Firestore is not configured or unavailable, the app falls back to local seed songs.
 
+## Firebase Authentication (Google)
+
+To use Google sign-in on `/auth/login`, configure Firebase Authentication:
+
+1. Open Firebase Console -> Authentication -> Sign-in method.
+2. Enable `Google` provider.
+3. Add your app domain to Authorized domains (for local dev, `localhost` is usually already present).
+4. Make sure your `.env` contains the Firebase web config values shown above.
+
+If Google auth is not enabled, the app will show a provider-disabled error on Google sign-in.
+
 ## Production
 
 Build the application for production:

@@ -12,7 +12,7 @@ interface FormIssue {
   message: string;
 }
 
-const { createUserAccount, currentUser, isBusy, authError } = useAuthStore();
+const { createUserAccount, loginWithGoogle, currentUser, isBusy, authError } = useAuthStore();
 
 const statusMessage = ref('');
 
@@ -81,6 +81,18 @@ async function submitForm(event: { data: CreateUserState }): Promise<void> {
     statusMessage.value = error instanceof Error ? error.message : 'Unable to create account.';
   }
 }
+
+async function handleGoogleSignIn(): Promise<void> {
+  statusMessage.value = '';
+
+  try {
+    await loginWithGoogle();
+    statusMessage.value = 'Signed in with Google.';
+    await navigateTo('/songs');
+  } catch (error) {
+    statusMessage.value = error instanceof Error ? error.message : 'Unable to sign in with Google.';
+  }
+}
 </script>
 
 <template>
@@ -98,6 +110,17 @@ async function submitForm(event: { data: CreateUserState }): Promise<void> {
     >
       <template #footer>
         <div class="space-y-3">
+          <UButton
+            color="neutral"
+            variant="soft"
+            icon="i-lucide-user-round"
+            block
+            :loading="isBusy"
+            @click="handleGoogleSignIn"
+          >
+            Continue with Google
+          </UButton>
+
           <p class="text-sm text-zinc-300">
             <span v-if="currentUser">Current user: {{ currentUser.email ?? currentUser.uid }}</span>
             <span v-else>Current user: not signed in.</span>

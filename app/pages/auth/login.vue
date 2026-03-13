@@ -11,7 +11,7 @@ interface FormIssue {
   message: string;
 }
 
-const { login, logout, currentUser, isReady, isBusy, authError } = useAuthStore();
+const { login, loginWithGoogle, logout, currentUser, isReady, isBusy, authError } = useAuthStore();
 
 const statusMessage = ref('');
 
@@ -67,6 +67,18 @@ async function submitForm(event: { data: LoginState }): Promise<void> {
   }
 }
 
+async function handleGoogleSignIn(): Promise<void> {
+  statusMessage.value = '';
+
+  try {
+    await loginWithGoogle();
+    statusMessage.value = 'Signed in with Google.';
+    await navigateTo('/songs');
+  } catch (error) {
+    statusMessage.value = error instanceof Error ? error.message : 'Unable to sign in with Google.';
+  }
+}
+
 async function handleSignOut(): Promise<void> {
   statusMessage.value = '';
 
@@ -99,6 +111,17 @@ async function handleSignOut(): Promise<void> {
     >
       <template #footer>
         <div class="space-y-3">
+          <UButton
+            color="neutral"
+            variant="soft"
+            icon="i-lucide-user-round"
+            block
+            :loading="isBusy"
+            @click="handleGoogleSignIn"
+          >
+            Continue with Google
+          </UButton>
+
           <p class="text-sm text-zinc-300">
             <span v-if="currentUser">Signed in as {{ currentUser.email ?? currentUser.uid }}.</span>
             <span v-else>Not signed in.</span>

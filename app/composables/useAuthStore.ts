@@ -1,8 +1,10 @@
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   type Auth,
   type User
@@ -153,13 +155,21 @@ function toAuthErrorMessage(error: unknown, fallback: string): string {
     case 'auth/invalid-credential':
       return 'Invalid email or password.';
     case 'auth/operation-not-allowed':
-      return 'Email/password sign-in is disabled for this Firebase project. Enable it in Authentication settings.';
+      return 'This sign-in method is disabled for this Firebase project. Enable it in Authentication settings.';
     case 'auth/email-already-in-use':
       return 'This email address is already in use.';
     case 'auth/weak-password':
       return 'Password is too weak. Use at least 6 characters.';
     case 'auth/too-many-requests':
       return 'Too many attempts. Please try again later.';
+    case 'auth/popup-blocked':
+      return 'Sign-in popup was blocked by your browser. Allow popups and try again.';
+    case 'auth/popup-closed-by-user':
+      return 'Google sign-in was cancelled before completion.';
+    case 'auth/cancelled-popup-request':
+      return 'A sign-in popup is already open. Complete or close it and try again.';
+    case 'auth/unauthorized-domain':
+      return 'This domain is not authorized for Firebase Authentication. Add it in Firebase Authentication settings.';
     default:
       break;
   }
@@ -394,6 +404,28 @@ export function useAuthStore() {
     }
   }
 
+  async function loginWithGoogle(): Promise<void> {
+    if (!auth) {
+      throw new Error('Firebase Auth is not configured for this app.');
+    }
+
+    isBusy.value = true;
+    authError.value = null;
+
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      const message = toAuthErrorMessage(error, 'Unable to sign in with Google.');
+      authError.value = message;
+      throw new Error(message);
+    } finally {
+      isBusy.value = false;
+    }
+  }
+
   async function createUserAccount(email: string, password: string): Promise<void> {
     if (!auth) {
       throw new Error('Firebase Auth is not configured for this app.');
@@ -456,6 +488,7 @@ export function useAuthStore() {
     isMetadataSyncing,
     metadataSyncError,
     login,
+    loginWithGoogle,
     createUserAccount,
     logout,
     updateTextPreferences,
