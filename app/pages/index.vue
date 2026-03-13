@@ -48,6 +48,9 @@ const averageTempo = computed(() => {
         <UButton to="/songs" icon="i-lucide-library-big" color="primary">
           Open Songs
         </UButton>
+        <UButton to="/mass" icon="i-lucide-list-music" color="secondary" variant="soft">
+          Plan Mass
+        </UButton>
         <UButton to="/users" icon="i-lucide-users" color="neutral" variant="outline">
           Browse Users
         </UButton>
@@ -112,6 +115,9 @@ const averageTempo = computed(() => {
         <div class="space-y-3 text-sm text-zinc-300">
           <p>
             Songs list: <NuxtLink class="text-emerald-300 underline-offset-4 hover:underline" to="/songs">/songs</NuxtLink>
+          </p>
+          <p>
+            Mass planner: <NuxtLink class="text-emerald-300 underline-offset-4 hover:underline" to="/mass">/mass</NuxtLink>
           </p>
           <p>
             Song detail: <span class="text-zinc-100">/songs/[id]</span> (rendered text only)

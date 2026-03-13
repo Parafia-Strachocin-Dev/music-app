@@ -5,15 +5,70 @@ const props = withDefaults(
   defineProps<{
     song: ParsedSong;
     showMeta?: boolean;
+    lyricFontSizePx?: number;
+    chordFontSizePx?: number;
   }>(),
   {
-    showMeta: true
+    showMeta: true,
+    lyricFontSizePx: 17,
+    chordFontSizePx: 12
   }
 );
 
 const { countLyricLines } = useChordProParser();
 
 const lyricLineCount = computed(() => countLyricLines(props.song));
+
+const LYRIC_FONT_MIN = 12;
+const LYRIC_FONT_MAX = 36;
+const CHORD_FONT_MIN = 10;
+const CHORD_FONT_MAX = 28;
+
+function clampFontSize(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, Math.round(value)));
+}
+
+const lyricFontSize = computed(() => {
+  return clampFontSize(props.lyricFontSizePx, LYRIC_FONT_MIN, LYRIC_FONT_MAX);
+});
+
+const chordFontSize = computed(() => {
+  return clampFontSize(props.chordFontSizePx, CHORD_FONT_MIN, CHORD_FONT_MAX);
+});
+
+const lyricLineHeight = computed(() => {
+  return Math.round(lyricFontSize.value * 1.45);
+});
+
+const chordLineHeight = computed(() => {
+  return Math.round(chordFontSize.value * 1.35);
+});
+
+const lyricRowStyle = computed(() => {
+  return {
+    minHeight: `${lyricLineHeight.value + chordLineHeight.value}px`
+  };
+});
+
+const segmentStyle = computed(() => {
+  return {
+    gridTemplateRows: `${chordLineHeight.value}px auto`
+  };
+});
+
+const chordStyle = computed(() => {
+  return {
+    fontSize: `${chordFontSize.value}px`,
+    lineHeight: `${chordLineHeight.value}px`
+  };
+});
+
+const lyricStyle = computed(() => {
+  return {
+    fontSize: `${lyricFontSize.value}px`,
+    lineHeight: `${lyricLineHeight.value}px`
+  };
+});
 </script>
 
 <template>
@@ -52,16 +107,17 @@ const lyricLineCount = computed(() => countLyricLines(props.song));
           {{ line.text }}
         </p>
 
-        <div v-else-if="line.type === 'lyric'" class="min-h-9 whitespace-nowrap">
+        <div v-else-if="line.type === 'lyric'" class="whitespace-nowrap" :style="lyricRowStyle">
           <span
             v-for="(segment, segmentIndex) in line.segments"
             :key="`${line.id}-${segmentIndex}`"
-            class="inline-grid min-w-[1ch] grid-rows-[1.1rem_auto] align-top"
+            class="inline-grid min-w-[1ch] align-top"
+            :style="segmentStyle"
           >
-            <span class="whitespace-pre font-mono text-xs font-semibold text-emerald-700">
+            <span class="whitespace-pre font-mono font-semibold text-emerald-700" :style="chordStyle">
               {{ segment.chord || ' ' }}
             </span>
-            <span class="whitespace-pre font-serif text-[1.05rem] leading-6 text-stone-900">
+            <span class="whitespace-pre font-serif text-stone-900" :style="lyricStyle">
               {{ segment.lyric || ' ' }}
             </span>
           </span>

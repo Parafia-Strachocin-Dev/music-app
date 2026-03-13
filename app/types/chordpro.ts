@@ -41,3 +41,25 @@ export interface UserProfile {
   location: string;
   bio: string;
 }
+
+export type SessionType = 'MASS';
+
+export type MassSongSlot = 'entrance' | 'offering' | 'communion' | 'communion2' | 'exit';
+
+export interface MassSongSelection {
+  entrance: string;
+  offering: string;
+  communion: string;
+  communion2: string;
+  exit: string;
+}
+
+export interface SessionRecord {
+  id: string;
+  type: SessionType;
+  title: string;
+  date: string;
+  songs: MassSongSelection;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -5,6 +5,7 @@ const { currentUser, logout, isBusy } = useAuthStore();
 const navItems = [
   { label: 'Home', to: '/' },
   { label: 'Songs', to: '/songs' },
+  { label: 'Mass Planner', to: '/mass' },
   { label: 'Users', to: '/users' },
   { label: 'Login', to: '/auth/login' },
   { label: 'Create User', to: '/auth/create-user' },
