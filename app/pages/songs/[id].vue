@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getSongById } = useSongsStore();
+const { getSongById, isLoading } = useSongsStore();
 const { getUserById } = useUsersStore();
 
 const route = useRoute();
@@ -53,10 +53,20 @@ function resetTranspose(): void {
 
 <template>
   <section class="space-y-6">
-    <div v-if="!song || !renderedSong" class="space-y-4">
+    <div v-if="isLoading && !song" class="space-y-4">
+      <h1 class="text-2xl font-semibold text-zinc-50">Loading song...</h1>
+      <p class="text-sm text-zinc-300">
+        Reading song data from Firestore.
+      </p>
+      <UButton to="/songs" color="neutral" variant="outline" icon="i-lucide-arrow-left">
+        Back To Songs
+      </UButton>
+    </div>
+
+    <div v-else-if="!song || !renderedSong" class="space-y-4">
       <h1 class="text-2xl font-semibold text-zinc-50">Song not found</h1>
       <p class="text-sm text-zinc-300">
-        The requested song does not exist in the local seed data.
+        The requested song does not exist in the current song library.
       </p>
       <UButton to="/songs" color="neutral" variant="outline" icon="i-lucide-arrow-left">
         Back To Songs

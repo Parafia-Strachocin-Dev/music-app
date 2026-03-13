@@ -11,13 +11,18 @@
   },
   "dependencies": {
     "@nuxt/ui": "4.5.1",
+    "firebase": "^12.10.0",
+    "firebase-admin": "^13.7.0",
+    "gcloud": "^0.37.2",
     "nuxt": "^4.4.2",
+    "nuxt-vuefire": "1.1.0",
     "tailwindcss": "^4.2.1",
     "vue": "^3.5.30",
     "vue-router": "^5.0.3"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.97",
-    "@vite-pwa/nuxt": "^1.1.1"
+    "@vite-pwa/nuxt": "^1.1.1",
+    "@vue/language-core": "^3.2.5"
   }
 }

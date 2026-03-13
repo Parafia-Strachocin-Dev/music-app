@@ -6,6 +6,7 @@ const { users } = useUsersStore();
 const { getSongById, updateSong } = useSongsStore();
 
 const errorMessage = ref('');
+const isSubmitting = ref(false);
 const songId = computed(() => String(route.params.id ?? ''));
 const song = computed(() => getSongById(songId.value));
 
@@ -83,14 +84,22 @@ async function submitForm(): Promise<void> {
     chordPro: form.chordPro
   };
 
-  const updated = updateSong(song.value.id, payload);
+  isSubmitting.value = true;
 
-  if (!updated) {
-    errorMessage.value = 'Unable to update song.';
-    return;
+  try {
+    const updated = await updateSong(song.value.id, payload);
+
+    if (!updated) {
+      errorMessage.value = 'Unable to update song.';
+      return;
+    }
+
+    await navigateTo(`/songs/${updated.id}`);
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Unable to update song.';
+  } finally {
+    isSubmitting.value = false;
   }
-
-  await navigateTo(`/songs/${updated.id}`);
 }
 </script>
 
@@ -111,7 +120,7 @@ async function submitForm(): Promise<void> {
         </p>
         <h1 class="text-3xl font-semibold tracking-tight text-zinc-50">Edit Song</h1>
         <p class="max-w-2xl text-sm text-zinc-300">
-          Changes are local-only and stay in memory for this running app session.
+          Changes are saved to Firestore when Firebase is configured.
         </p>
       </header>
 
@@ -212,7 +221,7 @@ async function submitForm(): Promise<void> {
           </p>
 
           <div class="flex flex-wrap gap-2">
-            <UButton type="submit" color="primary" icon="i-lucide-save">
+            <UButton type="submit" color="primary" icon="i-lucide-save" :loading="isSubmitting">
               Save Changes
             </UButton>
             <UButton :to="`/songs/${song.id}`" color="neutral" variant="outline" icon="i-lucide-x">

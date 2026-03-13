@@ -5,6 +5,7 @@ const { users } = useUsersStore();
 const { createSong } = useSongsStore();
 
 const errorMessage = ref('');
+const isSubmitting = ref(false);
 
 const form = reactive({
   title: '',
@@ -63,8 +64,16 @@ async function submitForm(): Promise<void> {
     chordPro: form.chordPro
   };
 
-  const created = createSong(payload);
-  await navigateTo(`/songs/${created.id}`);
+  isSubmitting.value = true;
+
+  try {
+    const created = await createSong(payload);
+    await navigateTo(`/songs/${created.id}`);
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Unable to create song.';
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 </script>
 
@@ -76,7 +85,7 @@ async function submitForm(): Promise<void> {
       </p>
       <h1 class="text-3xl font-semibold tracking-tight text-zinc-50">Create Song</h1>
       <p class="max-w-2xl text-sm text-zinc-300">
-        This form updates only local in-memory state and is not persisted to a backend.
+        This form saves songs to Firestore when Firebase is configured.
       </p>
     </header>
 
@@ -178,7 +187,7 @@ async function submitForm(): Promise<void> {
         </p>
 
         <div class="flex flex-wrap gap-2">
-          <UButton type="submit" color="primary" icon="i-lucide-save">
+          <UButton type="submit" color="primary" icon="i-lucide-save" :loading="isSubmitting">
             Create Song
           </UButton>
           <UButton to="/songs" color="neutral" variant="outline" icon="i-lucide-x">

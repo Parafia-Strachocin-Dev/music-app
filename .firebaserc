@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "uwielbiajmy-go-14d48"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

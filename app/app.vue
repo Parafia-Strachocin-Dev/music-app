@@ -1,10 +1,13 @@
 <script setup lang="ts">
 const route = useRoute();
+const { currentUser, logout, isBusy } = useAuthStore();
 
 const navItems = [
   { label: 'Home', to: '/' },
   { label: 'Songs', to: '/songs' },
   { label: 'Users', to: '/users' },
+  { label: 'Login', to: '/auth/login' },
+  { label: 'Create User', to: '/auth/create-user' },
   { label: 'Test Lab', to: '/test/chordpro' }
 ];
 
@@ -14,6 +17,14 @@ function isActive(path: string): boolean {
   }
 
   return route.path === path || route.path.startsWith(`${path}/`);
+}
+
+async function handleLogout(): Promise<void> {
+  await logout();
+
+  if (route.path.startsWith('/auth')) {
+    await navigateTo('/auth/login');
+  }
 }
 </script>
 
@@ -28,21 +39,39 @@ function isActive(path: string): boolean {
             ChordApp
           </NuxtLink>
 
-          <nav class="flex flex-wrap items-center gap-2">
-            <NuxtLink
-              v-for="item in navItems"
-              :key="item.to"
-              :to="item.to"
-              class="rounded-full px-3 py-1.5 text-sm font-medium transition"
-              :class="
-                isActive(item.to)
-                  ? 'bg-emerald-500/20 text-emerald-100 ring-1 ring-emerald-300/40'
-                  : 'text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100'
-              "
-            >
-              {{ item.label }}
-            </NuxtLink>
-          </nav>
+          <div class="flex flex-wrap items-center justify-end gap-3">
+            <nav class="flex flex-wrap items-center gap-2">
+              <NuxtLink
+                v-for="item in navItems"
+                :key="item.to"
+                :to="item.to"
+                class="rounded-full px-3 py-1.5 text-sm font-medium transition"
+                :class="
+                  isActive(item.to)
+                    ? 'bg-emerald-500/20 text-emerald-100 ring-1 ring-emerald-300/40'
+                    : 'text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100'
+                "
+              >
+                {{ item.label }}
+              </NuxtLink>
+            </nav>
+
+            <div v-if="currentUser" class="flex flex-wrap items-center gap-2">
+              <p class="text-xs text-zinc-300">
+                {{ currentUser.email ?? currentUser.uid }}
+              </p>
+              <UButton
+                color="neutral"
+                variant="outline"
+                size="xs"
+                icon="i-lucide-log-out"
+                :loading="isBusy"
+                @click="handleLogout"
+              >
+                Sign out
+              </UButton>
+            </div>
+          </div>
         </div>
       </header>
 

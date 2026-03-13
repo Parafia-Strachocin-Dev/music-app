@@ -18,6 +18,14 @@
 			],
 			"gallery": "https://api.mcp.github.com",
 			"version": "0.20.0"
+		},
+		"firebase": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y", 
+				"firebase-tools@latest", 
+				"mcp",]
 		}
 	},
 	"inputs": []

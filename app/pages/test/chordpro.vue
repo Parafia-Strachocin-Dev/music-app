@@ -56,14 +56,14 @@ function clearSource(): void {
       </p>
       <h1 class="text-3xl font-semibold tracking-tight text-zinc-50">ChordPro Source Playground</h1>
       <p class="max-w-3xl text-sm text-zinc-300">
-        Use this page to test parsing behavior. Song detail pages now show only rendered text.
+        Use this page to test parsing behavior with songs loaded from your current library.
       </p>
     </header>
 
     <UCard class="border border-zinc-800 bg-zinc-900/70" variant="subtle">
       <template #header>
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 class="text-lg font-semibold text-zinc-100">Load Seed Songs</h2>
+          <h2 class="text-lg font-semibold text-zinc-100">Load Library Songs</h2>
           <UButton color="neutral" variant="outline" icon="i-lucide-eraser" @click="clearSource">
             Clear
           </UButton>

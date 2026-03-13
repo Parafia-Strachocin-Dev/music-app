@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { songs } = useSongsStore();
+const { songs, isLoading, isFirestoreConnected, syncError, loadSongs } = useSongsStore();
 const { users, getUserById } = useUsersStore();
 
 const searchTerm = ref('');
@@ -123,6 +123,26 @@ const songCards = computed<SongCardItem[]>(() => {
     };
   });
 });
+
+const syncSummary = computed(() => {
+  if (isLoading.value) {
+    return 'Loading songs from Firestore...';
+  }
+
+  if (syncError.value) {
+    return `Firestore sync issue: ${syncError.value}`;
+  }
+
+  if (isFirestoreConnected.value) {
+    return 'Connected to Firestore.';
+  }
+
+  return 'Firestore is not configured. Using local fallback songs.';
+});
+
+async function retrySync(): Promise<void> {
+  await loadSongs({ force: true });
+}
 </script>
 
 <template>
@@ -150,6 +170,22 @@ const songCards = computed<SongCardItem[]>(() => {
         </UButton>
       </div>
     </header>
+
+    <div class="rounded-xl border border-zinc-800 bg-zinc-900/70 px-4 py-3 text-sm text-zinc-200">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <p>{{ syncSummary }}</p>
+        <UButton
+          color="neutral"
+          variant="outline"
+          size="sm"
+          icon="i-lucide-refresh-cw"
+          :loading="isLoading"
+          @click="retrySync"
+        >
+          Retry Sync
+        </UButton>
+      </div>
+    </div>
 
     <UCard class="border border-zinc-800 bg-zinc-900/70" variant="soft">
       <template #header>

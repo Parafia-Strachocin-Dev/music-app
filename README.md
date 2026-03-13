@@ -38,6 +38,37 @@ yarn dev
 bun run dev
 ```
 
+## Firestore Setup (Songs)
+
+This app stores songs in Cloud Firestore collection `songs`.
+
+1. Enable billing on your Firebase project (required by Firestore database creation).
+2. Create the default Firestore database:
+
+```bash
+firebase firestore:databases:create "(default)" --location europe-central2 --project uwielbiajmy-go-14d48
+```
+
+3. Deploy Firestore rules and indexes:
+
+```bash
+firebase deploy --only firestore --project uwielbiajmy-go-14d48
+```
+
+4. Set Firebase web config in `.env`:
+
+```bash
+NUXT_PUBLIC_FIREBASE_API_KEY=
+NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NUXT_PUBLIC_FIREBASE_PROJECT_ID=uwielbiajmy-go-14d48
+NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NUXT_PUBLIC_FIREBASE_APP_ID=
+```
+
+When Firestore is configured, songs are loaded from Firestore and writes are persisted there.
+If Firestore is not configured or unavailable, the app falls back to local seed songs.
+
 ## Production
 
 Build the application for production:
