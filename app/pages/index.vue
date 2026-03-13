@@ -23,16 +23,26 @@ const averageTempo = computed(() => {
     <header
       class="rounded-3xl border border-emerald-300/20 bg-[linear-gradient(120deg,rgba(16,185,129,0.2),rgba(59,130,246,0.08),rgba(245,158,11,0.18))] p-6 shadow-lg shadow-black/20 sm:p-8"
     >
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100/90">
-        ChordApp Workspace
-      </p>
-      <h1 class="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-zinc-50">
-        Manage songs, open rendered charts, and test ChordPro quickly.
-      </h1>
-      <p class="mt-3 max-w-3xl text-sm leading-6 text-zinc-200/85">
-        This starter structure includes a songs library, song detail pages with rendered output,
-        user profiles, and a dedicated test route for source-vs-render parsing checks.
-      </p>
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
+        <img
+          src="/icon.png"
+          alt="Uwielbiajmy GO! logo"
+          class="h-16 w-16 rounded-2xl border border-emerald-200/30 bg-zinc-950/70 p-2 shadow-md shadow-black/30 sm:h-20 sm:w-20"
+        >
+
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100/90">
+            Uwielbiajmy GO!
+          </p>
+          <h1 class="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-zinc-50">
+            Song app for Christian musicians.
+          </h1>
+          <p class="mt-3 max-w-3xl text-sm leading-6 text-zinc-200/85">
+            Uwielbiajmy GO! helps worship teams organize songs with chords, open clean charts fast,
+            and prepare music together for prayer meetings, services, and community gatherings.
+          </p>
+        </div>
+      </div>
 
       <div class="mt-5 flex flex-wrap gap-2">
         <UButton to="/songs" icon="i-lucide-library-big" color="primary">
